@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>Investment Portfolio Builder</title>
+<style>
+  :root {
+    --gold: #d4af37;
+    --gold-soft: #f5e4b3;
+    --gold-deep: #b8932e;
+    --bg: #000000;
+    --panel: #0e0e10;
+    --panel-2: #161618;
+    --line: rgba(212, 175, 55, 0.35);
+    --line-strong: rgba(212, 175, 55, 0.7);
+    --text: #f5f5f5;
+    --muted: #b8b8b8;
+    --green: #2ecc71;
+    --green-soft: #6ddc99;
+    --red: #ff5b5b;
+  }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body {
+    margin: 0; padding: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    min-height: 100vh;
+    overscroll-behavior: none;
+  }
+  body {
+    padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+    background:
+      radial-gradient(1200px 600px at 50% -10%, rgba(212,175,55,0.10), transparent 60%),
+      linear-gradient(180deg, #050505 0%, #000000 60%);
+  }
+  .app {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 18px 16px 80px;
+  }
+  /* HEADER */
+  .header {
+    display: flex; flex-direction: column; align-items: center;
+    text-align: center;
+    padding: 12px 8px 14px;
+    border-bottom: 1px solid var(--line);
+    margin-bottom: 18px;
+  }
+  .logo {
+    width: 96px; height: 96px;
+    border-radius: 20px;
+    background: #000;
+    border: 1.5px solid var(--line-strong);
+    box-shadow: 0 0 24px rgba(212,175,55,0.25), inset 0 0 12px rgba(212,175,55,0.08);
+    display: flex; align-items: center; justify-content: center;
+    overflow: hidden;
+    margin-bottom: 10px;
+  }
+  .logo img { width: 100%; height: 100%; object-fit: contain; display: block; }
+  .brand-title {
+    font-size: 22px; font-weight: 700;
+    letter-spacing: 0.5px;
+    background: linear-gradient(180deg, #fff 0%, var(--gold-soft) 60%, var(--gold) 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text; color: transparent;
+    margin: 4px 0 4px;
+  }
+  .brand-sub {
+    font-size: 13px; color: var(--muted); max-width: 520px; line-height: 1.45;
+  }
+
+  /* PANELS / CARDS */
+  .panel {
+    background: linear-gradient(180deg, var(--panel) 0%, var(--panel-2) 100%);
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    padding: 18px 16px;
+    margin: 14px 0;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.55), inset 0 1px 0 rgba(255,255,255,0.02);
+  }
+  .panel h2 {
+    margin: 0 0 12px;
+    font-size: 16px;
+    color: var(--gold-soft);
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+  }
+  .panel h3 {
+    margin: 14px 0 8px; font-size: 14px; color: var(--gold);
+    text-transform: uppercase; letter-spacing: 0.4px;
+  }
+
+  /* BUTTONS */
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center;
+    gap: 8px;
+    min-height: 48px;
+    padding: 12px 18px;
+    border-radius: 12px;
+    border: 1px solid var(--line-strong);
+    background: linear-gradient(180deg, #1a1407, #0a0703);
+    color: var(--gold-soft);
+    font-weight: 600; font-size: 15px;
+    cursor: pointer; text-decoration: none;
+    transition: transform .08s ease, box-shadow .2s ease, background .2s ease;
+    width: 100%;
+  }
+  .btn:active { transform: translateY(1px); }
+  .btn.primary {
+    background: linear-gradient(180deg, #f0d169 0%, var(--gold) 50%, var(--gold-deep) 100%);
+    color: #1a1100;
+    border: 1px solid #6b5418;
+    box-shadow: 0 4px 14px rgba(212,175,55,0.35), inset 0 1px 0 rgba(255,255,255,0.5);
+  }
+  .btn.ghost {
+    background: transparent; color: var(--gold-soft);
+  }
+  .btn-row { display: flex; flex-direction: column; gap: 10px; }
+  @media (min-width: 540px) {
+    .btn-row { flex-direction: row; }
+    .btn { width: auto; flex: 1; }
+  }
+
+  /* INPUTS */
+  .field { display: flex; flex-direction: column; margin-bottom: 12px; }
+  .field label {
+    font-size: 12px; text-transform: uppercase; letter-spacing: 0.6px;
+    color: var(--gold-soft); margin-bottom: 6px;
+  }
+  .field input, .field select {
+    background: #0a0a0c;
+    border: 1px solid var(--line);
+    color: var(--text);
+    border-radius: 10px;
+    padding: 12px 14px;
+    font-size: 16px;
+    min-height: 48px;
+    outline: none;
+  }
+  .field input:focus, .field select:focus {
+    border-color: var(--gold); box-shadow: 0 0 0 2px rgba(212,175,55,0.25);
+  }
+  .field .hint { font-size: 11px; color: var(--muted); margin-top: 4px; }
+  .grid-2 { display: grid; gap: 12px; grid-template-columns: 1fr; }
+  @media (min-width: 540px) { .grid-2 { grid-template-columns: 1fr 1fr; } }
+
+  /* PORTFOLIO CARDS */
+  .pcards { display: grid; gap: 10px; grid-template-columns: 1fr; }
+  @media (min-width: 540px) { .pcards { grid-template-columns: 1fr 1fr; } }
+  .pcard {
+    border: 1px solid var(--line);
+    background: #0a0a0c;
+    border-radius: 14px;
+    padding: 12px 14px;
+    cursor: pointer;
+    transition: all .15s ease;
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .pcard:hover { border-color: var(--gold); }
+  .pcard.active {
+    border-color: var(--gold);
+    background: linear-gradient(180deg, rgba(212,175,55,0.12), rgba(212,175,55,0.04));
+    box-shadow: 0 0 0 2px rgba(212,175,55,0.25);
+  }
+  .pcard .name { font-weight: 700; color: var(--gold-soft); font-size: 14px; }
+  .pcard .mix { font-size: 12px; color: var(--muted); }
+  .pcard .risk { font-size: 11px; letter-spacing: 0.5px; text-transform: uppercase; margin-top: 4px; }
+  .risk.low { color: #69d987; }
+  .risk.med { color: #f3c24b; }
+  .risk.high { color: #ff8b6b; }
+  .risk.xhigh { color: #ff5b5b; }
+
+  /* RESULTS */
+  .stat-grid {
+    display: grid; gap: 10px;
+    grid-template-columns: 1fr 1fr;
+  }
+  @media (min-width: 540px) { .stat-grid { grid-template-columns: repeat(3, 1fr); } }
+  .stat {
+    background: #0a0a0c; border: 1px solid var(--line);
+    border-radius: 12px; padding: 10px 12px;
+  }
+  .stat .lbl { font-size: 11px; text-transform: uppercase; color: var(--muted); letter-spacing: 0.5px; }
+  .stat .val { font-size: 18px; color: var(--gold-soft); font-weight: 700; margin-top: 4px; }
+  .stat .val.green { color: var(--green-soft); }
+  .stat .val.red { color: var(--red); }
+
+  /* TABLE */
+  .table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; border: 1px solid var(--line); border-radius: 12px; }
+  table { width: 100%; border-collapse: collapse; min-width: 480px; }
+  th, td { padding: 8px 10px; text-align: right; font-size: 13px; }
+  th { background: #15110a; color: var(--gold-soft); text-transform: uppercase; font-size: 11px; letter-spacing: 0.4px; }
+  td:first-child, th:first-child { text-align: left; }
+  tr:nth-child(even) td { background: #0a0a0c; }
+  tr:nth-child(odd) td { background: #0e0e10; }
+  td.green { color: var(--green-soft); }
+
+  /* CHART */
+  .chart {
+    width: 100%; height: 180px;
+    background: #0a0a0c;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    display: block;
+  }
+
+  /* DISCLAIMER */
+  .disclaimer {
+    border: 1px solid rgba(255,91,91,0.4);
+    background: rgba(255,91,91,0.06);
+    color: #ffc4c4;
+    padding: 12px 14px;
+    border-radius: 12px;
+    font-size: 12.5px;
+    line-height: 1.5;
+  }
+  .disclaimer b { color: #ff8b8b; }
+
+  .footer {
+    text-align: center; color: var(--muted); font-size: 11.5px;
+    padding: 18px 8px 0;
+  }
+  .footer .brand { color: var(--gold-soft); }
+
+  .hidden { display: none !important; }
+  .error {
+    border: 1px solid rgba(255,91,91,0.6);
+    color: #ffd0d0;
+    background: rgba(255,91,91,0.08);
+    padding: 10px 12px;
+    border-radius: 10px;
+    font-size: 13px; margin-bottom: 10px;
+  }
+
+  .pill {
+    display: inline-block; padding: 3px 8px; border-radius: 999px;
+    font-size: 11px; letter-spacing: 0.4px; text-transform: uppercase;
+    border: 1px solid var(--line); color: var(--gold-soft); background: #0a0a0c;
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- HOME / SPLASH -->
+  <section id="home" class="screen">
+    <div class="header">
+      <div class="logo"><img src="logo.png" alt="Investment Portfolio Builder logo" /></div>
+      <div class="brand-title">Investment Portfolio Builder&trade;</div>
+      <div class="brand-sub">Build your investing strategy and watch compound interest work for you.</div>
+    </div>
+
+    <div class="panel">
+      <h2>Get started</h2>
+      <p style="margin-top:0; color:var(--muted); font-size:13.5px; line-height:1.5;">
+        Pick a portfolio style, enter your numbers, and project how your investments
+        could grow year by year &mdash; with an inflation-adjusted result.
+      </p>
+      <div class="btn-row" style="margin-top:14px;">
+        <button class="btn primary" onclick="show('builder')">Start Building</button>
+        <button class="btn ghost" onclick="show('how')">How It Works</button>
+      </div>
+    </div>
+
+    <div class="footer">
+      <div class="brand">WGRALGO &mdash; The Wealth Gap Resolution Algorithm&trade; Inc.</div>
+      <div>v1.0.0 &bull; Offline &bull; No accounts &bull; No tracking</div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section id="how" class="screen hidden">
+    <div class="panel">
+      <h2>How It Works</h2>
+      <p style="color:var(--muted); font-size:14px; line-height:1.6;">
+        Choose a portfolio style. Each style has an estimated annual return based on
+        long-term educational averages. The app applies that return to your monthly
+        contributions and any starting balance, compounded yearly until your
+        retirement age. It then adjusts the final number for 3% annual inflation so
+        you can see purchasing power in today's dollars.
+      </p>
+      <h3>What you'll need</h3>
+      <ul style="color:var(--muted); font-size:14px; line-height:1.7;">
+        <li>Monthly contribution amount</li>
+        <li>Current age and retirement age</li>
+        <li>Optional starting balance</li>
+        <li>A portfolio style you'd like to model</li>
+      </ul>
+      <h3>Important</h3>
+      <div class="disclaimer">
+        <b>Educational only.</b> These projections are simplified estimates for
+        education only and do not guarantee future investment results.
+      </div>
+      <div class="btn-row" style="margin-top:14px;">
+        <button class="btn primary" onclick="show('builder')">Start Building</button>
+        <button class="btn ghost" onclick="show('home')">Back</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- BUILDER -->
+  <section id="builder" class="screen hidden">
+    <div class="panel">
+      <h2>Your Inputs</h2>
+
+      <div id="err" class="error hidden"></div>
+
+      <div class="grid-2">
+        <div class="field">
+          <label for="monthly">Monthly Contribution ($)</label>
+          <input id="monthly" type="number" inputmode="decimal" min="0" step="10" placeholder="e.g. 250" />
+        </div>
+        <div class="field">
+          <label for="start">Starting Balance ($)</label>
+          <input id="start" type="number" inputmode="decimal" min="0" step="100" placeholder="0" />
+          <span class="hint">Optional. Defaults to 0.</span>
+        </div>
+        <div class="field">
+          <label for="age">Current Age</label>
+          <input id="age" type="number" inputmode="numeric" min="10" max="100" step="1" placeholder="e.g. 30" />
+        </div>
+        <div class="field">
+          <label for="retire">Retirement Age</label>
+          <input id="retire" type="number" inputmode="numeric" min="11" max="110" step="1" placeholder="e.g. 65" />
+        </div>
+      </div>
+
+      <h3>Portfolio Type</h3>
+      <div id="pcards" class="pcards"></div>
+
+      <div class="btn-row" style="margin-top:16px;">
+        <button class="btn primary" onclick="calculate()">Calculate</button>
+        <button class="btn ghost" onclick="resetAll()">Reset</button>
+        <button class="btn ghost" onclick="show('home')">Back</button>
+      </div>
+
+      <div class="disclaimer" style="margin-top:14px;">
+        <b>Educational only.</b> These projections are simplified estimates for
+        education only and do not guarantee future investment results.
+      </div>
+    </div>
+  </section>
+
+  <!-- RESULTS -->
+  <section id="results" class="screen hidden">
+    <div class="panel">
+      <h2>Your Projection</h2>
+      <div id="rsumm" style="display:flex; flex-direction:column; gap:6px; margin-bottom:14px;">
+        <span class="pill" id="rPortfolio">&mdash;</span>
+        <span style="color:var(--muted); font-size:12.5px;" id="rExplain"></span>
+      </div>
+
+      <div class="stat-grid">
+        <div class="stat"><div class="lbl">Monthly Contribution</div><div class="val" id="rMonthly">&mdash;</div></div>
+        <div class="stat"><div class="lbl">Total Contributions</div><div class="val" id="rTotal">&mdash;</div></div>
+        <div class="stat"><div class="lbl">Years Invested</div><div class="val" id="rYears">&mdash;</div></div>
+        <div class="stat"><div class="lbl">Assumed Annual Return</div><div class="val" id="rRate">&mdash;</div></div>
+        <div class="stat"><div class="lbl">Projected End Balance</div><div class="val green" id="rEnd">&mdash;</div></div>
+        <div class="stat"><div class="lbl">Inflation-Adjusted (3%)</div><div class="val green" id="rReal">&mdash;</div></div>
+      </div>
+
+      <h3>Growth Chart</h3>
+      <canvas id="chart" class="chart" width="800" height="180"></canvas>
+
+      <h3>Year-by-Year Growth</h3>
+      <div class="table-wrap">
+        <table id="ytable">
+          <thead>
+            <tr>
+              <th>Year</th><th>Age</th><th>Contributions</th><th>Balance</th><th>Real ($)</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+
+      <h3>Lesson</h3>
+      <p style="color:var(--muted); font-size:13.5px; line-height:1.6;" id="rLesson"></p>
+
+      <div class="disclaimer" style="margin-top:14px;">
+        <b>Educational only.</b> These projections are simplified estimates for
+        education only and do not guarantee future investment results. Real returns
+        vary, fees apply, taxes apply, and markets can lose value.
+      </div>
+
+      <div class="btn-row" style="margin-top:14px;">
+        <button class="btn primary" onclick="shareSummary()">Share Summary</button>
+        <button class="btn ghost" onclick="show('builder')">Edit Inputs</button>
+        <button class="btn ghost" onclick="resetAll()">Reset</button>
+      </div>
+    </div>
+
+    <div class="footer">
+      <div class="brand">WGRALGO Investment Portfolio Builder&trade;</div>
+      <div>Offline &bull; No accounts &bull; No tracking</div>
+    </div>
+  </section>
+
+</div>
+
+<script>
+  const PORTFOLIOS = [
+    { id: "ultra",       name: "Ultra-Aggressive",      mix: "100% stocks",                rate: 0.085, risk: "xhigh", risk_label: "Very High Risk",
+      explain: "100% equities. Highest expected long-term return, biggest short-term swings. Best for long horizons and strong stomachs." },
+    { id: "aggressive",  name: "Aggressive Growth",     mix: "90% stocks / 10% bonds",     rate: 0.080, risk: "high",  risk_label: "High Risk",
+      explain: "Mostly equities with a small bond cushion. Geared for growth with mild dampening of drawdowns." },
+    { id: "growth-tilt", name: "Growth Tilt",           mix: "S&P 500 heavy",              rate: 0.075, risk: "high",  risk_label: "High Risk",
+      explain: "US large-cap heavy. Captures broad US market growth and historical earnings expansion." },
+    { id: "boglehead",   name: "Three-Fund Boglehead",  mix: "80% stocks / 20% bonds",     rate: 0.070, risk: "med",   risk_label: "Moderate-High Risk",
+      explain: "Classic low-cost three-fund split. Broad diversification across US, international, and bonds." },
+    { id: "global",      name: "Global Diversified",    mix: "70% stocks / 30% bonds (world)", rate: 0.068, risk: "med", risk_label: "Moderate Risk",
+      explain: "Worldwide stock/bond mix. Reduces single-country risk by spreading globally." },
+    { id: "moderate",    name: "Moderate",              mix: "70% stocks / 30% bonds",     rate: 0.065, risk: "med",   risk_label: "Moderate Risk",
+      explain: "Balanced growth with meaningful bond stability. Common pre-retirement core mix." },
+    { id: "incgrowth",   name: "Income + Growth",       mix: "60% stocks / 40% bonds",     rate: 0.058, risk: "low",   risk_label: "Lower Risk",
+      explain: "Heavier bond/income tilt. Smoother ride, lower expected return." },
+    { id: "conservative",name: "Conservative",          mix: "40% stocks / 60% bonds",     rate: 0.045, risk: "low",   risk_label: "Lower Risk",
+      explain: "Capital-preservation lean. Modest growth, gentler drawdowns. Often used near or in retirement." }
+  ];
+  const INFLATION = 0.03;
+  let selectedPortfolio = "aggressive";
+  let lastResult = null;
+
+  function show(id) {
+    document.querySelectorAll(".screen").forEach(s => s.classList.add("hidden"));
+    document.getElementById(id).classList.remove("hidden");
+    window.scrollTo({ top: 0 });
+  }
+
+  function fmt(n) {
+    if (!isFinite(n)) return "$0";
+    return "$" + Math.round(n).toLocaleString("en-US");
+  }
+
+  function renderPortfolioCards() {
+    const wrap = document.getElementById("pcards");
+    wrap.innerHTML = "";
+    PORTFOLIOS.forEach(p => {
+      const div = document.createElement("div");
+      div.className = "pcard" + (p.id === selectedPortfolio ? " active" : "");
+      div.onclick = () => { selectedPortfolio = p.id; renderPortfolioCards(); };
+      div.innerHTML =
+        '<div class="name">' + p.name + '</div>' +
+        '<div class="mix">' + p.mix + '</div>' +
+        '<div class="risk ' + p.risk + '">' + p.risk_label + ' &bull; ' + (p.rate*100).toFixed(1) + '% est. annual</div>';
+      wrap.appendChild(div);
+    });
+  }
+
+  function getPortfolio() {
+    return PORTFOLIOS.find(p => p.id === selectedPortfolio) || PORTFOLIOS[1];
+  }
+
+  function showError(msg) {
+    const e = document.getElementById("err");
+    if (!msg) { e.classList.add("hidden"); e.textContent = ""; return; }
+    e.textContent = msg; e.classList.remove("hidden");
+  }
+
+  function calculate() {
+    showError("");
+    const monthly = parseFloat(document.getElementById("monthly").value);
+    const startRaw = document.getElementById("start").value;
+    const start = startRaw === "" ? 0 : parseFloat(startRaw);
+    const age = parseInt(document.getElementById("age").value, 10);
+    const retire = parseInt(document.getElementById("retire").value, 10);
+
+    if (isNaN(monthly)) return showError("Enter a monthly contribution.");
+    if (monthly < 0) return showError("Monthly contribution cannot be negative.");
+    if (isNaN(start) || start < 0) return showError("Starting balance must be 0 or greater.");
+    if (isNaN(age) || age < 10 || age > 100) return showError("Enter a valid current age (10-100).");
+    if (isNaN(retire) || retire < 11 || retire > 110) return showError("Enter a valid retirement age (11-110).");
+    if (retire <= age) return showError("Retirement age must be greater than current age.");
+
+    const p = getPortfolio();
+    const years = retire - age;
+    const rate = p.rate;
+
+    // Yearly compounding with monthly contributions treated as end-of-year sum
+    let balance = start;
+    let totalContrib = 0;
+    const rows = [];
+    for (let y = 1; y <= years; y++) {
+      const contribYear = monthly * 12;
+      // grow existing balance, then add contributions (simple year-end add)
+      balance = balance * (1 + rate) + contribYear;
+      totalContrib += contribYear;
+      const realBal = balance / Math.pow(1 + INFLATION, y);
+      rows.push({
+        year: y,
+        ageAt: age + y,
+        contribTotal: totalContrib + start,
+        balance: balance,
+        real: realBal
+      });
+    }
+
+    const finalBalance = balance;
+    const realFinal = finalBalance / Math.pow(1 + INFLATION, years);
+
+    lastResult = {
+      portfolio: p, monthly, start, age, retire, years, rate,
+      totalContrib: totalContrib + start, finalBalance, realFinal, rows
+    };
+
+    document.getElementById("rPortfolio").textContent = p.name + " (" + p.mix + ")";
+    document.getElementById("rExplain").textContent = p.explain;
+    document.getElementById("rMonthly").textContent = fmt(monthly);
+    document.getElementById("rTotal").textContent = fmt(totalContrib + start);
+    document.getElementById("rYears").textContent = years + " yrs";
+    document.getElementById("rRate").textContent = (rate*100).toFixed(1) + "%";
+    document.getElementById("rEnd").textContent = fmt(finalBalance);
+    document.getElementById("rReal").textContent = fmt(realFinal);
+
+    const tbody = document.querySelector("#ytable tbody");
+    tbody.innerHTML = "";
+    rows.forEach(r => {
+      const tr = document.createElement("tr");
+      tr.innerHTML =
+        "<td>" + r.year + "</td>" +
+        "<td>" + r.ageAt + "</td>" +
+        "<td>" + fmt(r.contribTotal) + "</td>" +
+        "<td class='green'>" + fmt(r.balance) + "</td>" +
+        "<td>" + fmt(r.real) + "</td>";
+      tbody.appendChild(tr);
+    });
+
+    document.getElementById("rLesson").textContent = lessonFor(p, finalBalance, totalContrib + start, years);
+
+    drawChart(rows, start);
+    show("results");
+  }
+
+  function lessonFor(p, finalBal, contrib, yrs) {
+    const gained = finalBal - contrib;
+    const ratio = contrib > 0 ? (finalBal / contrib) : 0;
+    return "Over " + yrs + " years, contributions of " + fmt(contrib) +
+      " could grow to " + fmt(finalBal) + " in a " + p.name + " mix &mdash; about " +
+      ratio.toFixed(1) + "x your contributions, with " + fmt(gained) + " from compound growth. " +
+      "Inflation steadily erodes purchasing power, which is why the inflation-adjusted column matters more than the nominal balance.";
+  }
+
+  function drawChart(rows, start) {
+    const c = document.getElementById("chart");
+    const ctx = c.getContext("2d");
+    const w = c.width, h = c.height;
+    ctx.clearRect(0, 0, w, h);
+
+    if (!rows.length) return;
+    const pad = 20;
+    const xs = rows.map((_, i) => i);
+    const maxBal = Math.max(...rows.map(r => r.balance), start);
+    const minBal = 0;
+
+    function xAt(i) { return pad + (i / Math.max(1, rows.length - 1)) * (w - pad*2); }
+    function yAt(v) { return h - pad - ((v - minBal) / (maxBal - minBal || 1)) * (h - pad*2); }
+
+    // grid
+    ctx.strokeStyle = "rgba(212,175,55,0.15)";
+    ctx.lineWidth = 1;
+    for (let i = 0; i < 5; i++) {
+      const y = pad + i * ((h - pad*2) / 4);
+      ctx.beginPath(); ctx.moveTo(pad, y); ctx.lineTo(w - pad, y); ctx.stroke();
+    }
+
+    // nominal balance line (gold)
+    ctx.beginPath();
+    rows.forEach((r, i) => {
+      const x = xAt(i), y = yAt(r.balance);
+      if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+    });
+    ctx.strokeStyle = "#d4af37"; ctx.lineWidth = 2.2; ctx.stroke();
+
+    // real (inflation-adjusted) line (green)
+    ctx.beginPath();
+    rows.forEach((r, i) => {
+      const x = xAt(i), y = yAt(r.real);
+      if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+    });
+    ctx.strokeStyle = "#6ddc99"; ctx.lineWidth = 2; ctx.stroke();
+
+    // contributions baseline (muted)
+    ctx.beginPath();
+    rows.forEach((r, i) => {
+      const x = xAt(i), y = yAt(r.contribTotal);
+      if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+    });
+    ctx.strokeStyle = "rgba(255,255,255,0.35)"; ctx.lineWidth = 1.5; ctx.setLineDash([4, 4]); ctx.stroke();
+    ctx.setLineDash([]);
+
+    // legend
+    ctx.font = "11px -apple-system, Roboto, sans-serif";
+    ctx.fillStyle = "#d4af37"; ctx.fillText("■ Nominal", pad + 4, pad + 4);
+    ctx.fillStyle = "#6ddc99"; ctx.fillText("■ Real (3% infl)", pad + 70, pad + 4);
+    ctx.fillStyle = "rgba(255,255,255,0.7)"; ctx.fillText("- - Contributions", pad + 170, pad + 4);
+  }
+
+  function resetAll() {
+    document.getElementById("monthly").value = "";
+    document.getElementById("start").value = "";
+    document.getElementById("age").value = "";
+    document.getElementById("retire").value = "";
+    selectedPortfolio = "aggressive";
+    renderPortfolioCards();
+    showError("");
+    show("home");
+  }
+
+  function shareSummary() {
+    if (!lastResult) return;
+    const r = lastResult;
+    const lines = [
+      "WGRALGO Investment Portfolio Builder",
+      "",
+      "Portfolio: " + r.portfolio.name + " (" + r.portfolio.mix + ")",
+      "Years: " + r.years + " (age " + r.age + " to " + r.retire + ")",
+      "Monthly: " + fmt(r.monthly),
+      "Starting: " + fmt(r.start),
+      "Total contributions: " + fmt(r.totalContrib),
+      "Assumed annual return: " + (r.rate*100).toFixed(1) + "%",
+      "Projected end balance: " + fmt(r.finalBalance),
+      "Inflation-adjusted (3%): " + fmt(r.realFinal),
+      "",
+      "Educational only. Not financial advice."
+    ];
+    const text = lines.join("\n");
+    if (navigator.share) {
+      navigator.share({ title: "Portfolio Projection", text: text }).catch(() => fallbackCopy(text));
+    } else {
+      fallbackCopy(text);
+    }
+  }
+  function fallbackCopy(text) {
+    try {
+      const ta = document.createElement("textarea");
+      ta.value = text; document.body.appendChild(ta); ta.select();
+      document.execCommand("copy"); document.body.removeChild(ta);
+      alert("Summary copied to clipboard.");
+    } catch (e) { alert(text); }
+  }
+
+  renderPortfolioCards();
+</script>
+</body>
+</html>
