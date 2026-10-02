@@ -17,7 +17,7 @@ The app does not require an account, does not use analytics, does not contain ad
 
 ## Network access
 
-The APK does not require Android `INTERNET` permission. The app does not include or call third-party servers, advertising SDKs, or analytics SDKs.
+The APK does not request the Android `INTERNET` permission (it is stripped from the final manifest). The app does not include or call third-party servers, advertising SDKs, or analytics SDKs.
 
 ## External links
 

@@ -1,30 +1,39 @@
 # WGRALGO Investment Portfolio Builder
 
-Investment Portfolio Builder is a free educational Android app from **The Wealth Gap Resolution Algorithm™ Inc.** It helps users explore portfolio types, monthly contributions, compound growth, inflation-adjusted balances, and long-term investing habits.
+Investment Portfolio Builder is a free educational Android app from **The Wealth Gap Resolution Algorithm™ Inc.** Ride 40 years of real-world market ups and downs, then plan your own investing future with honest numbers, including fees, employer match, and inflation.
 
-The app is designed for serious people with limited resources who want to understand how their money could grow — without subscriptions, ads, accounts, trackers, or cloud uploads.
+No subscriptions, ads, accounts, trackers, or cloud uploads. The projections are for educational and informational purposes only. They are not financial, legal, tax, investment, or lending advice.
 
-The projections are for educational and informational purposes only. They are not financial, legal, tax, investment, or lending advice.
+- **Version:** 2.0.0
+- **Devices:** phones and tablets, portrait and landscape
+- **Package:** `org.wgralgo.investmentportfoliobuilder`
+- **License:** GPL-3.0-only
 
 ## Features
 
-- Eight portfolio styles, each with an educational annual-return assumption
-  - Ultra-Aggressive — 100% stocks (8.5% est.)
-  - Aggressive Growth — 90/10 (8.0% est.)
-  - Growth Tilt — S&P 500 heavy (7.5% est.)
-  - Three-Fund Boglehead — 80/20 (7.0% est.)
-  - Global Diversified — 70/30 world (6.8% est.)
-  - Moderate — 70/30 (6.5% est.)
-  - Income + Growth — 60/40 (5.8% est.)
-  - Conservative — 40/60 (4.5% est.)
-- Monthly contribution, current age, retirement age, and optional starting balance inputs
-- Year-by-year projection table with age, total contributions, balance, and inflation-adjusted balance
-- 3% annual inflation adjustment (real purchasing-power view)
-- Visual nominal vs. real growth chart, plus contribution baseline
-- Educational portfolio explanations and a per-result money lesson
-- Share/copy a plain-text projection summary
-- Premium WGRALGO black-and-gold UI, tablet and phone responsive
-- Offline-first, no permissions required, no account, no cloud
+- **🎢 Market Rollercoaster (the game).** You're 25 and invest $200 a month until 65. Pick how you invest (target-date fund, stock/bond mixes, a savings account, or one hot stock), then make real decisions through market crashes, hot tips, fees, and raises. Every game has different market years.
+- **Compare yourself** with Steady Sam (same portfolio, never panics) and Diversified Dana (a simple target-date index fund), on a 40-year chart with market crashes marked.
+- **Investor Behavior Score** with feedback on every decision and lessons to take with you.
+- **🧮 My Investing Plan (the calculator).** Choose a portfolio mix, your age, retirement age, starting amount, monthly contribution, yearly raise, employer match, and fees. See bad-luck, typical, and good-luck outcomes from 2,000 simulated futures, in today's dollars too, plus what you put in, what your employer added, fees paid, and a year-by-year table.
+- **Looks like a real app:** black launch screen with the big logo, a launcher icon that fills round, squircle, and square shapes, a solid app bar, About / Privacy / Credits panels, and Android back-button support (back returns from the planner to the game, asks before quitting a game, returns to the start from results, and asks before exiting the app).
+- **Phones and tablets, portrait and landscape:** the app rotates freely. On phones turned sideways the start-screen logo is smaller so the game starts on screen; on tablets the dashboard and results spread into more columns.
+- Offline-first: no `INTERNET` permission, no account, no cloud.
+
+## Screenshots
+
+| Launch | Home | Market crash | Feedback |
+|------|---------|-----------------|------|
+| ![Launch](screenshots/01-splash.png) | ![Home](screenshots/02-home.png) | ![Market crash](screenshots/03-event.png) | ![Feedback](screenshots/04-feedback.png) |
+
+| Results | Planner | Menu | About |
+|---------|--------------|--------------|------|
+| ![Results](screenshots/05-results.png) | ![Planner](screenshots/06-planner.png) | ![Menu](screenshots/07-menu.png) | ![About](screenshots/08-about.png) |
+
+Phones and tablets:
+
+| Phone, landscape | Tablet, landscape | Tablet, portrait |
+|---|---|---|
+| ![Phone landscape](screenshots/09-phone-landscape.png) | ![Tablet landscape](screenshots/10-tablet-landscape.png) | ![Tablet portrait](screenshots/11-tablet-portrait.png) |
 
 ## Privacy & Offline
 
@@ -36,22 +45,31 @@ WGRALGO Investment Portfolio Builder is offline-first.
 - No trackers.
 - No subscription.
 - No cloud sync and no backend server.
-- All inputs stay on your device.
-- The APK does **not** request the Android `INTERNET` permission.
+- All inputs stay on your device and nothing is saved after you close the app.
+- The APK does **not** request the Android `INTERNET` permission (it is stripped from the final manifest).
 
 See [PRIVACY.md](PRIVACY.md) for the full privacy statement.
 
 ## Installation (Sideloading)
 
-1. Download `WGRALGO_Investment_Portfolio_Builder_v1.0.0.apk` from the [v1.0.0 release](../../releases/tag/v1.0.0).
+1. Download `WGRALGO-InvestmentPortfolioBuilder-v2.0.0.apk` from the [v2.0.0 release](../../releases/tag/v2.0.0).
 2. (Optional) Verify the download:
    ```
-   sha256sum -c WGRALGO_Investment_Portfolio_Builder_v1.0.0.apk.sha256
+   sha256sum -c WGRALGO-InvestmentPortfolioBuilder-v2.0.0.apk.sha256
    ```
-3. On your Android device, allow installation from unknown sources for your browser or file manager.
+3. On your Android phone or tablet, allow installation from unknown sources for your browser or file manager.
 4. Open the APK and install.
 
-> **If you installed an earlier test/debug build:** you may need to **uninstall the old APK first** before installing v1.0.0. The official public APK uses a new proper release signature, and Android will refuse to install over a build signed with a different key.
+> **Upgrading from v1.0.0?** Version 2.0.0 is signed with a new key, so it can't install over the old app. Uninstall v1.0.0 first, then install v2.0.0. The app saves nothing on your device, so nothing is lost.
+
+Signing certificate (v2.0.0 and later):
+
+- `CN=WGRALGO, OU=Investment Portfolio Builder, O=The Wealth Gap Resolution Algorithm Inc, C=US`
+- SHA-256: `3E:BC:B3:17:1E:38:64:2F:DC:F5:B2:0A:B7:34:EC:20:BE:A5:6A:AB:9C:AF:50:82:AA:C3:39:C9:7F:00:CB:C7`
+
+```
+apksigner verify --print-certs WGRALGO-InvestmentPortfolioBuilder-v2.0.0.apk
+```
 
 ## Build from Source
 
@@ -69,26 +87,29 @@ cd android
 ./gradlew assembleRelease
 ```
 
-A release keystore is required for a signed APK. Create one and reference it via `android/keystore.properties`:
+A release keystore is required for a signed APK. Reference it via `android/keystore.properties` (never committed):
 
 ```
-storeFile=/absolute/path/to/your-release.jks
+storeFile=/absolute/path/to/your-release.p12
 storePassword=YOUR_PASSWORD
-keyAlias=YOUR_ALIAS
+keyAlias=portfolio-builder
 keyPassword=YOUR_PASSWORD
 ```
 
-The signed APK will be at `android/app/build/outputs/apk/release/app-release.apk`.
+or the env vars `IPB_KEYSTORE_FILE`, `IPB_KEYSTORE_PASSWORD`, `IPB_KEY_ALIAS`, `IPB_KEY_PASSWORD`. The signed APK will be at `android/app/build/outputs/apk/release/app-release.apk`.
 
-## Screenshots
+Check a build before publishing:
 
-| Home | Builder | Portfolio Cards |
-|------|---------|-----------------|
-| ![Home](screenshots/01-home.png) | ![Builder](screenshots/02-builder.png) | ![Portfolios](screenshots/03-portfolios.png) |
+```
+bash tools/validate-release.sh android/app/build/outputs/apk/release/app-release.apk
+```
 
-| Results | Growth Chart | How It Works |
-|---------|--------------|--------------|
-| ![Results](screenshots/04-results.png) | ![Chart](screenshots/05-chart.png) | ![How](screenshots/06-how.png) |
+The launcher icon, splash images, and in-app logo are generated from `assets/icon.png` with `python3 tools/build-icons.py` (run from the repo root).
+
+## Continuous integration and releases
+
+- [`.github/workflows/android.yml`](.github/workflows/android.yml) builds a debug APK on every push and pull request.
+- [`.github/workflows/release.yml`](.github/workflows/release.yml) builds, validates, signs, and publishes `WGRALGO-InvestmentPortfolioBuilder-v<version>.apk` with its `.sha256` to GitHub Releases. Run it from the **Actions** tab or push a `v*` tag. It needs these repository secrets: `IPB_KEYSTORE_BASE64`, `IPB_KEYSTORE_PASSWORD`, `IPB_KEY_ALIAS`, `IPB_KEY_PASSWORD`.
 
 ## Disclaimer
 
